@@ -29,6 +29,55 @@ public class CusController {
 
 	@PostMapping("/register")
 	public String createNewCus(@RequestBody CusEntity customer) {
+	    List<String> missingFields = new ArrayList<>();
+	    
+	    if (customer.getFirstName() == null) {
+	        missingFields.add("firstName");
+	    }
+
+	    if (customer.getLastName() == null) {
+	        missingFields.add("lastName");
+	    }
+
+	    if (customer.getCity() == null) {
+	        missingFields.add("city");
+	    }
+
+	    if (customer.getMail() == null) {
+	        missingFields.add("mail");
+	    }
+	    if (customer.getMobileNumber() == null) {
+	        missingFields.add("mobileNumber");
+	    }
+
+	    if (customer.getAddress() == null) {
+	        missingFields.add("address");
+	    }
+
+	    if (customer.getPostalCode() == null) {
+	        missingFields.add("postalCode");
+	    }
+
+	    if (customer.getPassword() == null) {
+	        missingFields.add("password");
+	    }
+
+	    if (customer.getConfirmPassword() == null) {
+	        missingFields.add("confirmPassword");
+	    }
+
+//	    if (!missingFields.isEmpty()) {
+//	        throw new MissingFieldsException("Required field(s) are missing", missingFields);
+//	    }
+
+	    if (customer.getPassword() == null || customer.getConfirmPassword() == null) {
+	        return "Password or Confirm Password is null.";
+	    }
+
+	    if (!customer.getPassword().equals(customer.getConfirmPassword())) {
+	        return "Password and Confirm Password are not same.";
+	    }
+
 
 	    boolean isMailExists = cusRepository.existsByMail(customer.getMail());
 
@@ -60,19 +109,19 @@ public class CusController {
 		}
 	}
 
-//	@PutMapping("/customer/{mail}")
-//	public String updateCustomerByMail(@PathVariable String mail, @RequestBody CusEntity customer) {
-//		Optional<CusEntity> cus = cusRepository.findByMail(mail);
-//		if (cus.isPresent()) {
-//			CusEntity existCus = cus.get();
-//			existCus.setPassword(customer.getPassword());
-//			existCus.setConfirmPassword(customer.getConfirmPassword());
-//			cusRepository.save(existCus);
-//			return "Customer Details against Mail " + mail + " updated";
-//		} else {
-//			return "Customer Details do not exist for mail " + mail;
-//		}
-//	}
+	@PutMapping("/customer/{mail}")
+	public String updateCustomerByMail(@PathVariable String mail, @RequestBody CusEntity customer) {
+		Optional<CusEntity> cus = cusRepository.findByMail(mail);
+		if (cus.isPresent()) {
+			CusEntity existCus = cus.get();
+			existCus.setPassword(customer.getPassword());
+			existCus.setConfirmPassword(customer.getConfirmPassword());
+			cusRepository.save(existCus);
+			return "Customer Details against Mail " + mail + " updated";
+		} else {
+			return "Customer Details do not exist for mail " + mail;
+		}
+	}
 	
 	@DeleteMapping("/customer/all")
     public ResponseEntity<String> deleteAllCustomers() {
